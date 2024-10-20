@@ -14,37 +14,90 @@ b:Label("x2Swiftz",{
     
 }) 
 
-b:Button("Button",function()
-    print("Elym Winning")
+b:Button("esp item",function()
+    local items = workspace:WaitForChild("_Items")
+
+for _, model in pairs(items:GetChildren()) do
+    if model:IsA("Model") then
+        -- ลบ Highlights อันเดิมถ้ามี
+        local existingHighlight = model:FindFirstChildOfClass("Highlight")
+        if existingHighlight then
+            existingHighlight:Destroy()
+        end
+
+        -- สร้าง Highlight ใหม่
+        local newHighlight = Instance.new("Highlight")
+        newHighlight.Name = "ModelHighlight"
+        newHighlight.Parent = model
+        newHighlight.FillColor = Color3.new(0, 1, 0) -- สีเขียวโปร่งใส
+        newHighlight.FillTransparency = 0.5 -- ปรับความโปร่งใส
+        newHighlight.OutlineColor = Color3.new(0, 1, 0) -- เส้นขอบสีเขียว
+
+        -- ลบ ESP Text อันเดิมถ้ามี
+        local existingTextLabel = model:FindFirstChild("ESPText")
+        if existingTextLabel then
+            existingTextLabel:Destroy()
+        end
+
+        -- สร้าง ESP Text ใหม่
+        local espText = Instance.new("BillboardGui")
+        espText.Name = "ESPText"
+        espText.Size = UDim2.new(0, 50, 0, 50) -- ขนาดของข้อความ
+        espText.Adornee = model.PrimaryPart -- กำหนดตำแหน่งของข้อความที่จะแสดง
+        espText.StudsOffset = Vector3.new(0, 2, 0) -- ปรับตำแหน่งให้สูงขึ้นจากโมเดล
+        espText.AlwaysOnTop = true -- ตั้งให้อยู่เหนือโมเดลเสมอ
+
+        local textLabel = Instance.new("TextLabel")
+        textLabel.Size = UDim2.new(1, 0, 1, 0)
+        textLabel.BackgroundTransparency = 1
+        textLabel.TextColor3 = Color3.new(0, 1, 0) -- สีเขียว
+        textLabel.Text = model.Name -- ตั้งชื่อข้อความตามชื่อโมเดล
+        textLabel.TextScaled = true -- ปรับขนาดข้อความให้พอดีกับขนาด
+        textLabel.Parent = espText
+
+        espText.Parent = model
+    end
+end
 end)
 
-b:Toggle("Toggle",function(bool)
-    shared.toggle = bool
-    print(shared.toggle)
-end)
+b:Button("esp Monster",function()
+    local gasMaskGuy = workspace._Characters.GasMaskGuy
 
-b:Slider("Slider",{
-    min = 10; -- min value of the slider
-    max = 50; -- max value of the slider
-    precise = true; -- max 2 decimals
-},function(value)
-    print(value)
-end)
+-- ฟังก์ชันสำหรับสร้าง Highlight ใหม่
+local function addHighlight(model)
+    -- ลบ Highlight เดิมถ้ามี
+    for _, child in ipairs(model:GetChildren()) do
+        if child:IsA("Highlight") then
+            child:Destroy()
+        end
+    end
+    
+    -- สร้าง Highlight ใหม่
+    local highlight = Instance.new("Highlight")
+    highlight.Name = "GasMaskGuyHighlight"  -- ตั้งชื่อเพื่อให้ง่ายต่อการตรวจสอบ
+    highlight.FillColor = Color3.new(1, 0, 0) -- สีแดง
+    highlight.FillTransparency = 0.5 -- โปร่งใส 50%
+    highlight.OutlineColor = Color3.new(1, 0, 0) -- เส้นขอบสีแดง
+    highlight.Parent = model
+end
 
-b:Dropdown("Dropdown",{"A","B","C"},true,function(mob) --true/false, replaces the current title "Dropdown" with the option that t
-    print(mob)
-end)
+-- เพิ่ม Highlight ให้กับ GasMaskGuy
+addHighlight(gasMaskGuy)
 
-b:Bind("Bind",Enum.KeyCode.C,function() --Default bind
-    print("Yes")
-end)
+local ripper = workspace._Characters.Ripper
+local highlight = ripper:FindFirstChildOfClass("Highlight")
 
-b:ColorPicker("ColorPicker",Color3.fromRGB(255,0,0),function(color) --Default color
-    print(color)
-end)
+-- ถ้ามี Highlight อันเก่าอยู่ให้ลบทิ้ง
+if highlight then
+    highlight:Destroy()
+end
 
-b:Box("Box","number",function(value) -- "number" or "string"
-    print(value)
+-- สร้าง Highlight ใหม่
+local newHighlight = Instance.new("Highlight")
+newHighlight.Parent = ripper
+newHighlight.OutlineColor = Color3.fromRGB(255, 0, 0) -- สีเส้นขอบสีแดง
+newHighlight.FillColor = Color3.fromRGB(255, 0, 0) -- สีภายในสีแดง
+newHighlight.FillTransparency = 0.5 -- โปร่งใส 50%
 end)
 
 b:DestroyGui()
