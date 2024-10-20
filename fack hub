@@ -51,6 +51,50 @@ for _, model in pairs(items:GetChildren()) do
         espText.Parent = model
     end
 end
+
+local leversFolder = workspace.Props.Levers
+
+for _, model in ipairs(leversFolder:GetChildren()) do
+    if model:IsA("Model") then
+        -- ลบ Highlight ที่มีอยู่
+        local existingHighlight = model:FindFirstChildOfClass("Highlight")
+        if existingHighlight then
+            existingHighlight:Destroy()
+        end
+        
+        -- สร้าง Highlight ใหม่
+        local newHighlight = Instance.new("Highlight")
+        newHighlight.Parent = model
+        newHighlight.OutlineColor = Color3.fromRGB(0, 255, 0) -- สีเขียว
+        newHighlight.FillColor = Color3.fromRGB(0, 255, 0) -- สีเขียวโปร่งใส
+        newHighlight.FillTransparency = 0.5 -- ความโปร่งใส
+
+        -- ลบ ESP text ที่มีอยู่
+        local existingEspText = model:FindFirstChild("ESPText")
+        if existingEspText then
+            existingEspText:Destroy()
+        end
+        
+        -- สร้าง ESP text ใหม่
+        local espText = Instance.new("BillboardGui")
+        espText.Name = "ESPText"
+        espText.Adornee = model.PrimaryPart -- หรือเปลี่ยนไปใช้ส่วนอื่นที่ต้องการ
+        espText.Size = UDim2.new(0, 50, 0, 50) -- ขนาดของ ESP
+        espText.StudsOffset = Vector3.new(0, 3, 0) -- ระยะห่างจาก Model
+        espText.AlwaysOnTop = true -- ทำให้ ESP อยู่เหนือโมเดลเสมอ
+        
+        local textLabel = Instance.new("TextLabel")
+        textLabel.Size = UDim2.new(1, 0, 1, 0)
+        textLabel.BackgroundTransparency = 1
+        textLabel.TextColor3 = Color3.fromRGB(0, 255, 0) -- สีเขียว
+        textLabel.Text = model.Name -- ชื่อของ Model
+        textLabel.TextScaled = true
+        
+        -- เชื่อมต่อ ESP text กับ BillboardGui
+        espText.Parent = model
+        textLabel.Parent = espText
+    end
+end
 end)
 
 b:Button("esp Monster",function()
